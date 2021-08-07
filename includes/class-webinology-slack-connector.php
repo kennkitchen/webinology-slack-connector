@@ -158,6 +158,7 @@ class Webinology_Slack_Connector {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
 		$this->loader->add_action( 'init', $plugin_admin, 'webn_slack_initialization' );
+        $this->loader->add_action( 'admin_menu', $plugin_admin, 'webn_slack_admin_menus' );
 		$this->loader->add_action( 'transition_post_status', $plugin_admin, 'webn_slack_post_transitions', 10, 3 );
 
 	}
