@@ -30,14 +30,14 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-//require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+require_once plugin_dir_path( __FILE__ ) . 'update-check.php';
 
 /**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-const WEBINOLOGY_SLACK_CONNECTOR_VERSION = '1.0.0';
+const WEBINOLOGY_SLACK_CONNECTOR_VERSION = '1.0.1';
 
 /**
  * The code that runs during plugin activation.

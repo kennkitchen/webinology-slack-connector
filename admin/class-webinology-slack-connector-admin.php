@@ -114,6 +114,11 @@ class Webinology_Slack_Connector_Admin {
             return;
         }
 
+        // TODO this should really be checking against an option where user has said which post types to alert on.
+        if (!in_array($post->post_type, ['post', 'page'])) {
+            return;
+        }
+
         $webn_slack_options = get_option('webn_slack_options');
 
         if ($webn_slack_options['webn_slack_inbound_webhook'] == '') {
