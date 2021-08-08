@@ -27,7 +27,7 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-	die;
+    die;
 }
 
 require_once plugin_dir_path( __FILE__ ) . 'update-check.php';
@@ -44,8 +44,8 @@ const WEBINOLOGY_SLACK_CONNECTOR_VERSION = '1.0.1';
  * This action is documented in includes/class-webinology-slack-connector-activator.php
  */
 function activate_webinology_slack_connector() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-webinology-slack-connector-activator.php';
-	Webinology_Slack_Connector_Activator::activate();
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-webinology-slack-connector-activator.php';
+    Webinology_Slack_Connector_Activator::activate();
 }
 
 /**
@@ -53,8 +53,8 @@ function activate_webinology_slack_connector() {
  * This action is documented in includes/class-webinology-slack-connector-deactivator.php
  */
 function deactivate_webinology_slack_connector() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-webinology-slack-connector-deactivator.php';
-	Webinology_Slack_Connector_Deactivator::deactivate();
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-webinology-slack-connector-deactivator.php';
+    Webinology_Slack_Connector_Deactivator::deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_webinology_slack_connector' );
@@ -77,8 +77,8 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-webinology-slack-connector
  */
 function run_webinology_slack_connector() {
 
-	$plugin = new Webinology_Slack_Connector();
-	$plugin->run();
+    $plugin = new Webinology_Slack_Connector();
+    $plugin->run();
 
 }
 run_webinology_slack_connector();
