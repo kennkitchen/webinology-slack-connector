@@ -37,6 +37,9 @@ if ( ! defined( 'WPINC' ) ) {
  */
 const WEBINOLOGY_SLACK_CONNECTOR_VERSION = '1.0.1';
 
+/**
+ * Constants for updater
+ */
 const CURRENT_VERSION = WEBINOLOGY_SLACK_CONNECTOR_VERSION;
 const CACHE_KEY = 'webn_slack_connector_updater';
 const RESOURCE_URL = 'https://webinology-files.sfo3.digitaloceanspaces.com/plugins/webinology-slack-connector/info.json';
