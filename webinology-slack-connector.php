@@ -16,7 +16,7 @@
  * Plugin Name:       Webinology Slack Connector
  * Plugin URI:        https://webinology.io
  * Description:       Get notifications in Slack when things change on your WordPress website.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Author:            KMD Enterprises, LLC
  * Author URI:        https://kmde.us
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-const WEBINOLOGY_SLACK_CONNECTOR_VERSION = '1.0.1';
+const WEBINOLOGY_SLACK_CONNECTOR_VERSION = '1.0.2';
 
 /**
  * Constants for updater
