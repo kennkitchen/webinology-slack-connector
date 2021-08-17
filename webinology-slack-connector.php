@@ -16,7 +16,7 @@
  * Plugin Name:       Webinology Slack Connector
  * Plugin URI:        https://webinology.io
  * Description:       Get notifications in Slack when things change on your WordPress website.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Author:            KMD Enterprises, LLC
  * Author URI:        https://kmde.us
  * License:           GPL-2.0+
@@ -35,14 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-const WEBINOLOGY_SLACK_CONNECTOR_VERSION = '1.0.2';
-
-/**
- * Constants for updater
- */
-const CURRENT_VERSION = WEBINOLOGY_SLACK_CONNECTOR_VERSION;
-const CACHE_KEY = 'webn_slack_connector_updater';
-const RESOURCE_URL = 'https://webinology-files.sfo3.digitaloceanspaces.com/plugins/webinology-slack-connector/info.json';
+const WEBINOLOGY_SLACK_CONNECTOR_VERSION = '1.0.3';
 
 /**
  * The code that runs during plugin activation.
@@ -72,57 +65,45 @@ register_deactivation_hook( __FILE__, 'deactivate_webinology_slack_connector' );
 require plugin_dir_path( __FILE__ ) . 'includes/class-webinology-slack-connector.php';
 
 /**
- * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
- *
- * @since    1.0.0
+ * The updater section.
  */
-function run_webinology_slack_connector() {
-
-    check_for_updates();
-
-    $plugin = new Webinology_Slack_Connector();
-    $plugin->run();
-
-}
-run_webinology_slack_connector();
-
-function check_for_updates() {
+function webinology_slack_connector_check_for_updates()
+{
     defined('ABSPATH') || exit;
 
-    if( ! class_exists( 'webinologyUpdateChecker' ) ) {
+    if (!class_exists('webinologySlackConnectorUpdateChecker')) {
 
-        class webinologyUpdateChecker{
+        class webinologySlackConnectorUpdateChecker
+        {
 
             public $plugin_slug;
             public $version;
             public $cache_key;
             public $cache_allowed;
 
-            public function __construct() {
+            public function __construct()
+            {
 
-                $this->plugin_slug = plugin_basename( __DIR__ );
-                $this->version = CURRENT_VERSION;
-                $this->cache_key = CACHE_KEY;
+                $this->plugin_slug = 'webinology-slack-connector';
+                $this->version = WEBINOLOGY_SLACK_CONNECTOR_VERSION;
+                $this->cache_key = 'webinology_slack_connector_update_cache_key';
                 $this->cache_allowed = false;
 
-                add_filter( 'plugins_api', array( $this, 'info' ), 20, 3 );
-                add_filter( 'site_transient_update_plugins', array( $this, 'update' ) );
-                add_action( 'upgrader_process_complete', array( $this, 'purge' ), 10, 2 );
+                add_filter('plugins_api', array($this, 'webn_updater_info'), 20, 3);
+                add_filter('site_transient_update_plugins', array($this, 'webn_updater_update'));
+                add_action('upgrader_process_complete', array($this, 'webn_updater_purge'), 10, 2);
 
             }
 
-            public function request(){
+            public function webn_updater_request()
+            {
 
-                $remote = get_transient( $this->cache_key );
+                $remote = get_transient($this->cache_key);
 
-                if( false === $remote || ! $this->cache_allowed ) {
+                if (false === $remote || !$this->cache_allowed) {
 
                     $remote = wp_remote_get(
-                        RESOURCE_URL,
+                        'https://webinology-files.sfo3.digitaloceanspaces.com/plugins/webinology-slack-connector/info.json',
                         array(
                             'timeout' => 10,
                             'headers' => array(
@@ -131,44 +112,42 @@ function check_for_updates() {
                         )
                     );
 
-                    if(
-                        is_wp_error( $remote )
-                        || 200 !== wp_remote_retrieve_response_code( $remote )
-                        || empty( wp_remote_retrieve_body( $remote ) )
+                    if (
+                        is_wp_error($remote)
+                        || 200 !== wp_remote_retrieve_response_code($remote)
+                        || empty(wp_remote_retrieve_body($remote))
                     ) {
                         return false;
                     }
 
-                    set_transient( $this->cache_key, $remote, DAY_IN_SECONDS );
+                    set_transient($this->cache_key, $remote, DAY_IN_SECONDS);
 
                 }
 
-                $remote = json_decode( wp_remote_retrieve_body( $remote ) );
+                $remote = json_decode(wp_remote_retrieve_body($remote));
 
                 return $remote;
 
             }
 
 
-            function info( $res, $action, $args ) {
-
-                // print_r( $action );
-                // print_r( $args );
+            function webn_updater_info($res, $action, $args)
+            {
 
                 // do nothing if you're not getting plugin information right now
-                if( 'plugin_information' !== $action ) {
+                if ('plugin_information' !== $action) {
                     return false;
                 }
 
                 // do nothing if it is not our plugin
-                if( $this->plugin_slug !== $args->slug ) {
+                if ($this->plugin_slug !== $args->slug) {
                     return false;
                 }
 
                 // get updates
-                $remote = $this->request();
+                $remote = $this->webn_updater_request();
 
-                if( ! $remote ) {
+                if (!$remote) {
                     return false;
                 }
 
@@ -192,7 +171,7 @@ function check_for_updates() {
                     'changelog' => $remote->sections->changelog
                 );
 
-                if( ! empty( $remote->banners ) ) {
+                if (!empty($remote->banners)) {
                     $res->banners = array(
                         'low' => $remote->banners->low,
                         'high' => $remote->banners->high
@@ -203,28 +182,29 @@ function check_for_updates() {
 
             }
 
-            public function update( $transient ) {
+            public function webn_updater_update($transient)
+            {
 
-                if ( empty($transient->checked ) ) {
+                if (empty($transient->checked)) {
                     return $transient;
                 }
 
-                $remote = $this->request();
+                $remote = $this->webn_updater_request();
 
-                if(
+                if (
                     $remote
-                    && version_compare( $this->version, $remote->version, '<' )
-                    && version_compare( $remote->requires, get_bloginfo( 'version' ), '<' )
-                    && version_compare( $remote->requires_php, PHP_VERSION, '<' )
+                    && version_compare($this->version, $remote->version, '<')
+                    && version_compare($remote->requires, get_bloginfo('version'), '<')
+                    && version_compare($remote->requires_php, PHP_VERSION, '<')
                 ) {
                     $res = new stdClass();
                     $res->slug = $this->plugin_slug;
-                    $res->plugin = plugin_basename( __FILE__ );
+                    $res->plugin = plugin_basename(__FILE__);
                     $res->new_version = $remote->version;
                     $res->tested = $remote->tested;
                     $res->package = $remote->download_url;
 
-                    $transient->response[ $res->plugin ] = $res;
+                    $transient->response[$res->plugin] = $res;
 
                 }
 
@@ -232,15 +212,16 @@ function check_for_updates() {
 
             }
 
-            public function purge(){
+            public function webn_updater_purge()
+            {
 
                 if (
                     $this->cache_allowed
                     && 'update' === $options['action']
-                    && 'plugin' === $options[ 'type' ]
+                    && 'plugin' === $options['type']
                 ) {
                     // just clean the cache when new plugin version is installed
-                    delete_transient( $this->cache_key );
+                    delete_transient($this->cache_key);
                 }
 
             }
@@ -248,7 +229,26 @@ function check_for_updates() {
 
         }
 
-        new webinologyUpdateChecker();
+        new webinologySlackConnectorUpdateChecker();
 
     }
 }
+
+/**
+ * Begins execution of the plugin.
+ *
+ * Since everything within the plugin is registered via hooks,
+ * then kicking off the plugin from this point in the file does
+ * not affect the page life cycle.
+ *
+ * @since    1.0.0
+ */
+function run_webinology_slack_connector() {
+
+    $plugin = new Webinology_Slack_Connector();
+    webinology_slack_connector_check_for_updates();
+
+    $plugin->run();
+
+}
+run_webinology_slack_connector();
