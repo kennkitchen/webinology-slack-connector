@@ -84,7 +84,7 @@ class Webinology_Slack_Connector {
 		$this->plugin_name = 'webinology-slack-connector';
 
         $this->logger = new Logger('WEBN-SLACK-CONNECTOR');
-        $this->logger->pushHandler(new StreamHandler(PLUGIN_ROOT_PATH . 'webn_slack_connector.log', Logger::DEBUG));
+        $this->logger->pushHandler(new StreamHandler(PLUGIN_ROOT_PATH . 'webn_slack_connector.log', Logger::WARNING));
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -172,6 +172,7 @@ class Webinology_Slack_Connector {
 		$this->loader->add_action( 'init', $plugin_admin, 'webn_slack_initialization' );
         $this->loader->add_action( 'admin_menu', $plugin_admin, 'webn_slack_admin_menus' );
 		$this->loader->add_action( 'transition_post_status', $plugin_admin, 'webn_slack_post_transitions', 10, 3 );
+        $this->loader->add_action( 'post_updated', $plugin_admin, 'webn_slack_post_updates', 10, 3 );
 
 	}
 
@@ -233,7 +234,9 @@ class Webinology_Slack_Connector {
 
     /**
      * Retrieve the Monolog logger
-     * @return Logger
+     *
+     * @since     1.1.0
+     * @return    Logger    The instantiated Monolog object
      */
     public function get_logger() {
         return $this->logger;

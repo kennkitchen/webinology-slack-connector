@@ -106,6 +106,12 @@ class Webinology_Slack_Connector_Admin {
 
     }
 
+    /**
+     * Admin initializaton section.
+     *
+     * @since    1.1.0
+     * @return void
+     */
     public function webn_slack_initialization() {
         $options_array = array(
             'webn_slack_inbound_webhook' => '',
@@ -134,11 +140,15 @@ class Webinology_Slack_Connector_Admin {
     }
 
     /**
+     * Post status transition hook.
+     *
+     * @since 1.0.0
      * @param $new_status
      * @param $old_status
      * @param $post
      */
     public function webn_slack_post_transitions($new_status, $old_status, $post) {
+        $this->logger->debug('Post transition hook fired.');
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ){
             return;
         }
@@ -178,6 +188,50 @@ class Webinology_Slack_Connector_Admin {
     }
 
     /**
+     * Post update hook.
+     *
+     * @since 1.1.0
+     * @param int $post_ID
+     * @param WP_Post $post_after
+     * @param WP_Post $post_before
+     * @return void
+     */
+    public function webn_slack_post_updates(int $post_ID, WP_Post $post_after, WP_Post $post_before) {
+        $this->logger->debug('Post transition hook fired.');
+        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ){
+            return;
+        }
+
+        // TODO this should really be checking against an option where user has said which post types to alert on.
+        if (!in_array($post_after->post_type, ['post', 'page'])) {
+            return;
+        }
+
+        $webn_slack_options = get_option('webn_slack_options');
+
+        if ($webn_slack_options['webn_slack_inbound_webhook'] == '') {
+            // use regex for better validation
+            echo 'Ya gotta have a valid webhook!'; die;
+        } else {
+            $url = $webn_slack_options['webn_slack_inbound_webhook'];
+        }
+
+        if ($webn_slack_options['webn_slack_alert_on_post_update'] == 'yes') {
+            $author = get_user_by('ID', $post_after->post_author);
+            $site_name = get_bloginfo('name');
+            $post_permalink = get_post_permalink($post_after->ID, true);
+
+            $update_text = 'User ' . $author->display_name . ' has updated "' . $post_after->post_title . '" on ' . $site_name . '.';
+
+            $result = $this->webn_slack_curler($update_text, $url);
+        }
+
+    }
+
+    /**
+     * Generic cURL-to-Slack function.
+     *
+     * @since 1.0.0
      * @param $update_text
      * @param $url
      * @return bool|string
@@ -215,6 +269,8 @@ class Webinology_Slack_Connector_Admin {
 
     /**
      * Main Menu Page
+     *
+     * @since 1.0.0
      */
     public function webn_slack_main_menu_page() {
         ?>
@@ -228,6 +284,8 @@ class Webinology_Slack_Connector_Admin {
 
     /**
      * Setting Page
+     *
+     * @since 1.0.0
      */
     public function webn_slack_settings_page() {
         ?>
@@ -285,6 +343,7 @@ class Webinology_Slack_Connector_Admin {
 
     /**
      *
+     * @since 1.0.0
      */
     public function webn_slack_submenu1_page() {
         $page_name = $this->get_request_parameter('page');
@@ -299,6 +358,7 @@ class Webinology_Slack_Connector_Admin {
 
     /**
      *
+     * @since 1.0.0
      */
     public function webn_slack_submenu2_page() {
         $page_name = $this->get_request_parameter('page');
@@ -314,12 +374,14 @@ class Webinology_Slack_Connector_Admin {
     /**
      * Sanitize Options
      *
+     * @since 1.0.0
      * @param $options
      * @return mixed
      */
     public function webn_slack_sanitize_options($options) {
         $options['webn_slack_alert_on_published'] = (!empty($options['webn_slack_alert_on_published'])) ? sanitize_text_field($options['webn_slack_alert_on_published']) : '';
         $options['webn_slack_alert_on_unpublish'] = (!empty($options['webn_slack_alert_on_unpublish'])) ? sanitize_text_field($options['webn_slack_alert_on_unpublish']) : '';
+        $options['webn_slack_alert_on_post_update'] = (!empty($options['webn_slack_alert_on_post_update'])) ? sanitize_text_field($options['webn_slack_alert_on_post_update']) : '';
         $options['webn_slack_inbound_webhook'] = (!empty($options['webn_slack_inbound_webhook'])) ? sanitize_text_field($options['webn_slack_inbound_webhook']) : '';
 
         return $options;
@@ -327,6 +389,8 @@ class Webinology_Slack_Connector_Admin {
 
     /**
      * Register Admin Menus
+     *
+     * @since 1.0.0
      */
     function webn_slack_admin_menus() {
         add_menu_page('Webinology Slack Connector', 'Slack Connector', 'administrator', 'webn_slack_main_menu',
@@ -345,6 +409,12 @@ class Webinology_Slack_Connector_Admin {
             [$this, 'webn_slack_sanitize_options']);
     }
 
+    /**
+     * @since 1.0.0
+     * @param $key
+     * @param $default
+     * @return mixed|string
+     */
     private function get_request_parameter( $key, $default = '' ) {
         // If not request set
         if ( ! isset( $_REQUEST[ $key ] ) || empty( $_REQUEST[ $key ] ) ) {
