@@ -40,6 +40,11 @@ class Webinology_Slack_Connector_Public {
 	 */
 	private $version;
 
+    /**
+     * @var \Monolog\Logger $logger
+     */
+    private $logger;
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -47,10 +52,11 @@ class Webinology_Slack_Connector_Public {
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name, $version, $logger ) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+        $this->logger = $logger;
 
 	}
 

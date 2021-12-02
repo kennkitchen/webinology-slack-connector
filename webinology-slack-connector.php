@@ -30,6 +30,10 @@ if ( ! defined( 'WPINC' ) ) {
     die;
 }
 
+// Autoload Composer-included libraries
+require plugin_dir_path( __FILE__ ) . '/vendor/autoload.php';
+define( 'PLUGIN_ROOT_PATH', plugin_dir_path( __FILE__ ));
+
 /**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
@@ -65,176 +69,6 @@ register_deactivation_hook( __FILE__, 'deactivate_webinology_slack_connector' );
 require plugin_dir_path( __FILE__ ) . 'includes/class-webinology-slack-connector.php';
 
 /**
- * The updater section.
- */
-function webinology_slack_connector_check_for_updates()
-{
-    defined('ABSPATH') || exit;
-
-    if (!class_exists('webinologySlackConnectorUpdateChecker')) {
-
-        class webinologySlackConnectorUpdateChecker
-        {
-
-            public $plugin_slug;
-            public $version;
-            public $cache_key;
-            public $cache_allowed;
-
-            public function __construct()
-            {
-
-                $this->plugin_slug = 'webinology-slack-connector';
-                $this->version = WEBINOLOGY_SLACK_CONNECTOR_VERSION;
-                $this->cache_key = 'webinology_slack_connector_update_cache_key';
-                $this->cache_allowed = false;
-
-                add_filter('plugins_api', array($this, 'webn_updater_info'), 20, 3);
-                add_filter('site_transient_update_plugins', array($this, 'webn_updater_update'));
-                add_action('upgrader_process_complete', array($this, 'webn_updater_purge'), 10, 2);
-
-            }
-
-            public function webn_updater_request()
-            {
-
-                $remote = get_transient($this->cache_key);
-
-                if (false === $remote || !$this->cache_allowed) {
-
-                    $remote = wp_remote_get(
-                        'https://webinology-files.sfo3.digitaloceanspaces.com/plugins/webinology-slack-connector/webinology-slack-connector.json',
-                        array(
-                            'timeout' => 10,
-                            'headers' => array(
-                                'Accept' => 'application/json'
-                            )
-                        )
-                    );
-
-                    if (
-                        is_wp_error($remote)
-                        || 200 !== wp_remote_retrieve_response_code($remote)
-                        || empty(wp_remote_retrieve_body($remote))
-                    ) {
-                        return false;
-                    }
-
-                    set_transient($this->cache_key, $remote, DAY_IN_SECONDS);
-
-                }
-
-                $remote = json_decode(wp_remote_retrieve_body($remote));
-
-                return $remote;
-
-            }
-
-
-            function webn_updater_info($res, $action, $args)
-            {
-
-                // do nothing if you're not getting plugin information right now
-                if ('plugin_information' !== $action) {
-                    return false;
-                }
-
-                // do nothing if it is not our plugin
-                if ($this->plugin_slug !== $args->slug) {
-                    return false;
-                }
-
-                // get updates
-                $remote = $this->webn_updater_request();
-
-                if (!$remote) {
-                    return false;
-                }
-
-                $res = new stdClass();
-
-                $res->name = $remote->name;
-                $res->slug = $remote->slug;
-                $res->version = $remote->version;
-                $res->tested = $remote->tested;
-                $res->requires = $remote->requires;
-                $res->author = $remote->author;
-                $res->author_profile = $remote->author_profile;
-                $res->download_link = $remote->download_url;
-                $res->trunk = $remote->download_url;
-                $res->requires_php = $remote->requires_php;
-                $res->last_updated = $remote->last_updated;
-
-                $res->sections = array(
-                    'description' => $remote->sections->description,
-                    'installation' => $remote->sections->installation,
-                    'changelog' => $remote->sections->changelog
-                );
-
-                if (!empty($remote->banners)) {
-                    $res->banners = array(
-                        'low' => $remote->banners->low,
-                        'high' => $remote->banners->high
-                    );
-                }
-
-                return $res;
-
-            }
-
-            public function webn_updater_update($transient)
-            {
-
-                if (empty($transient->checked)) {
-                    return $transient;
-                }
-
-                $remote = $this->webn_updater_request();
-
-                if (
-                    $remote
-                    && version_compare($this->version, $remote->version, '<')
-                    && version_compare($remote->requires, get_bloginfo('version'), '<')
-                    && version_compare($remote->requires_php, PHP_VERSION, '<')
-                ) {
-                    $res = new stdClass();
-                    $res->slug = $this->plugin_slug;
-                    $res->plugin = plugin_basename(__FILE__);
-                    $res->new_version = $remote->version;
-                    $res->tested = $remote->tested;
-                    $res->package = $remote->download_url;
-
-                    $transient->response[$res->plugin] = $res;
-
-                }
-
-                return $transient;
-
-            }
-
-            public function webn_updater_purge()
-            {
-
-                if (
-                    $this->cache_allowed
-                    && 'update' === $options['action']
-                    && 'plugin' === $options['type']
-                ) {
-                    // just clean the cache when new plugin version is installed
-                    delete_transient($this->cache_key);
-                }
-
-            }
-
-
-        }
-
-        new webinologySlackConnectorUpdateChecker();
-
-    }
-}
-
-/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
@@ -244,10 +78,7 @@ function webinology_slack_connector_check_for_updates()
  * @since    1.0.0
  */
 function run_webinology_slack_connector() {
-
     $plugin = new Webinology_Slack_Connector();
-    webinology_slack_connector_check_for_updates();
-
     $plugin->run();
 
 }

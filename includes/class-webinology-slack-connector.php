@@ -13,6 +13,9 @@
  * @subpackage Webinology_Slack_Connector/includes
  */
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 /**
  * The core plugin class.
  *
@@ -57,6 +60,12 @@ class Webinology_Slack_Connector {
 	 */
 	protected $version;
 
+    /**
+     * The Monolog Logger
+     * @var Logger $logger
+     */
+    protected $logger;
+
 	/**
 	 * Define the core functionality of the plugin.
 	 *
@@ -73,6 +82,9 @@ class Webinology_Slack_Connector {
 			$this->version = '1.0.0';
 		}
 		$this->plugin_name = 'webinology-slack-connector';
+
+        $this->logger = new Logger('WEBN-SLACK-CONNECTOR');
+        $this->logger->pushHandler(new StreamHandler(PLUGIN_ROOT_PATH . 'webn_slack_connector.log', Logger::DEBUG));
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -152,7 +164,7 @@ class Webinology_Slack_Connector {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Webinology_Slack_Connector_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new Webinology_Slack_Connector_Admin( $this->get_plugin_name(), $this->get_version(), $this->get_logger() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -172,7 +184,7 @@ class Webinology_Slack_Connector {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Webinology_Slack_Connector_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new Webinology_Slack_Connector_Public( $this->get_plugin_name(), $this->get_version(), $this->get_logger() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -219,4 +231,11 @@ class Webinology_Slack_Connector {
 		return $this->version;
 	}
 
+    /**
+     * Retrieve the Monolog logger
+     * @return Logger
+     */
+    public function get_logger() {
+        return $this->logger;
+    }
 }
