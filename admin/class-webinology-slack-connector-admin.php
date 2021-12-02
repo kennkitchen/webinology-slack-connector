@@ -107,7 +107,30 @@ class Webinology_Slack_Connector_Admin {
     }
 
     public function webn_slack_initialization() {
+        $options_array = array(
+            'webn_slack_inbound_webhook' => '',
+            'webn_slack_alert_on_published' => 'no',
+            'webn_slack_alert_on_unpublish' => 'no',
+            'webn_slack_alert_on_post_update' => 'no'
+        );
 
+        $webn_slack_options = get_option('webn_slack_options');
+        $this->logger->debug('Loaded options:', ['Options' => $webn_slack_options]);
+
+
+        if (!$webn_slack_options) {
+            update_option('webn_slack_options', $options_array);
+            $this->logger->debug('Options not found so loading them from defaults.');
+        } else {
+            foreach ($options_array as $option_label => $option_value) {
+                if (!array_key_exists($option_label, $webn_slack_options)) {
+                    $this->logger->debug('Single option not found:', ['Option' => $option_label]);
+                    $webn_slack_options[$option_label] = $option_value;
+                    update_option('webn_slack_options', $webn_slack_options);
+                }
+
+            }
+        }
     }
 
     /**
@@ -223,6 +246,7 @@ class Webinology_Slack_Connector_Admin {
 
                     </fieldset>
                     <fieldset class="settings-boxes"><legend>Alert Settings</legend><br />
+                        <!-- Alert when post is published-->
                         <label for="webn_slack_options[webn_slack_alert_on_published]">Alert when post published?:</label>
 
                         <input name="webn_slack_options[webn_slack_alert_on_published]"
@@ -230,12 +254,23 @@ class Webinology_Slack_Connector_Admin {
                         <input name="webn_slack_options[webn_slack_alert_on_published]"
                                value="no" <?php checked('no', $webn_slack_options['webn_slack_alert_on_published'], true) ?> type="radio">No<br>
                         <br />
+
+                        <!--Alert when post is unpublished-->
                         <label for="webn_slack_options[webn_slack_alert_on_unpublish]">Alert when post unpublished?:</label>
 
                         <input name="webn_slack_options[webn_slack_alert_on_unpublish]"
                                value="yes" <?php checked('yes', $webn_slack_options['webn_slack_alert_on_unpublish'], true) ?> type="radio">Yes<br>
                         <input name="webn_slack_options[webn_slack_alert_on_unpublish]"
                                value="no" <?php checked('no', $webn_slack_options['webn_slack_alert_on_unpublish'], true) ?> type="radio">No<br>
+                        <br />
+
+                        <!--Alert when a previously published post is updated-->
+                        <label for="webn_slack_options[webn_slack_alert_on_post_update]">Alert when a published post is updated?:</label>
+
+                        <input name="webn_slack_options[webn_slack_alert_on_post_update]"
+                               value="yes" <?php checked('yes', $webn_slack_options['webn_slack_alert_on_post_update'], true) ?> type="radio">Yes<br>
+                        <input name="webn_slack_options[webn_slack_alert_on_post_update]"
+                               value="no" <?php checked('no', $webn_slack_options['webn_slack_alert_on_post_update'], true) ?> type="radio">No<br>
                         <br />
 
                     </fieldset>
