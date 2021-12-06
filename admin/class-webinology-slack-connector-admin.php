@@ -52,7 +52,8 @@ class Webinology_Slack_Connector_Admin {
             'webn_slack_inbound_webhook' => '',
             'webn_slack_alert_on_published' => 'no',
             'webn_slack_alert_on_unpublish' => 'no',
-            'webn_slack_alert_on_post_update' => 'no'
+            'webn_slack_alert_on_post_update' => 'no',
+            'webn_slack_alert_on_new_comment' => 'no',
         );
 
     /**
@@ -174,14 +175,7 @@ class Webinology_Slack_Connector_Admin {
             return;
         }
 
-//        $webn_slack_options = get_option('webn_slack_options');
-//
-//        if ($webn_slack_options['webn_slack_inbound_webhook'] == '') {
-//            // use regex for better validation
-//            echo 'Ya gotta have a valid webhook!'; die;
-//        } else {
-//            $url = $webn_slack_options['webn_slack_inbound_webhook'];
-//        }
+
 
         if (($this->plugin_options['webn_slack_alert_on_published'] == 'yes') || ($this->plugin_options['webn_slack_alert_on_unpublish'] == 'yes'))  {
             $author = get_user_by('ID', $post->post_author);
@@ -239,6 +233,20 @@ class Webinology_Slack_Connector_Admin {
 
     }
 
+    public function webn_slack_new_comment(int $comment_ID, int $comment_approved, array $commentdata) {
+        $this->logger->debug('New comment hook fired.');
+
+        if ($this->plugin_options['webn_slack_alert_on_new_comment'] == 'yes') {
+            $commenter = $commentdata['comment_author'];
+            $site_name = get_bloginfo('name');
+            $post = get_post($commentdata['comment_post_ID']);
+
+            $update_text = 'There is a new comment on "' . $post->post_title . '" from ' . $commenter . ' on ' . $site_name . '.';
+
+            $result = $this->communicator->generic_curl($update_text, $this->plugin_options['webn_slack_inbound_webhook']);
+
+        }
+    }
 
 
     /**
@@ -353,6 +361,12 @@ class Webinology_Slack_Connector_Admin {
         } else {
             return false;
         }
+    }
+
+    private function hook_preflight_checks($type) {
+        $continue = false;
+
+
     }
 
 }

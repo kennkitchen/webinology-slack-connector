@@ -180,6 +180,7 @@ class Webinology_Slack_Connector {
         if ($plugin_admin->is_webhook_valid()) {
             $this->loader->add_action( 'transition_post_status', $plugin_admin, 'webn_slack_post_transitions', 10, 3 );
             $this->loader->add_action( 'post_updated', $plugin_admin, 'webn_slack_post_updates', 10, 3 );
+            $this->loader->add_action( 'comment_post', $plugin_admin, 'webn_slack_new_comment', 10 ,3 );
         }
 
 	}

@@ -28,7 +28,7 @@
                 <br />
 
             </fieldset>
-            <fieldset class="settings-boxes"><legend>Alert Settings</legend><br />
+            <fieldset class="settings-boxes"><legend>Post Settings</legend><br />
                 <!-- Alert when post is published-->
                 <label for="webn_slack_options[webn_slack_alert_on_published]">Alert when post published?:</label>
 
@@ -54,6 +54,17 @@
                        value="yes" <?php checked('yes', $webn_slack_options['webn_slack_alert_on_post_update'], true) ?> type="radio">Yes<br>
                 <input name="webn_slack_options[webn_slack_alert_on_post_update]"
                        value="no" <?php checked('no', $webn_slack_options['webn_slack_alert_on_post_update'], true) ?> type="radio">No<br>
+                <br />
+
+            </fieldset>
+            <fieldset class="settings-boxes"><legend>Comment Settings</legend><br />
+                <!-- Alert when comment is added-->
+                <label for="webn_slack_options[webn_slack_alert_on_new_comment]">Alert when a comment is added?:</label>
+
+                <input name="webn_slack_options[webn_slack_alert_on_new_comment]"
+                       value="yes" <?php checked('yes', $webn_slack_options['webn_slack_alert_on_new_comment'], true) ?> type="radio">Yes<br>
+                <input name="webn_slack_options[webn_slack_alert_on_new_comment]"
+                       value="no" <?php checked('no', $webn_slack_options['webn_slack_alert_on_new_comment'], true) ?> type="radio">No<br>
                 <br />
 
             </fieldset>
