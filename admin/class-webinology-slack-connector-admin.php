@@ -91,7 +91,7 @@ class Webinology_Slack_Connector_Admin {
 
             }
         }
-        $this->logger->debug('Class option for webook:', ['Option' => $this->plugin_options['webn_slack_inbound_webhook']]);
+//        $this->logger->debug('Class option for webook:', ['Option' => $this->plugin_options['webn_slack_inbound_webhook']]);
 
     }
 
@@ -170,6 +170,10 @@ class Webinology_Slack_Connector_Admin {
             return;
         }
 
+        if ( ! empty( $_REQUEST['meta-box-loader'] ) ) { // phpcs:ignore
+            return;
+        }
+
 //        $webn_slack_options = get_option('webn_slack_options');
 //
 //        if ($webn_slack_options['webn_slack_inbound_webhook'] == '') {
@@ -219,12 +223,16 @@ class Webinology_Slack_Connector_Admin {
             return;
         }
 
+        if ( ! empty( $_REQUEST['meta-box-loader'] ) ) { // phpcs:ignore
+            return;
+        }
+
         if ($this->plugin_options['webn_slack_alert_on_post_update'] == 'yes') {
-            $author = get_user_by('ID', $post_after->post_author);
+            $author = wp_get_current_user()->user_login;//   get_user_by('ID', $post_after->post_author);
             $site_name = get_bloginfo('name');
             $post_permalink = get_post_permalink($post_after->ID, true);
 
-            $update_text = 'User ' . $author->display_name . ' has updated "' . $post_after->post_title . '" on ' . $site_name . '.';
+            $update_text = 'User ' . $author . ' has updated "' . $post_after->post_title . '" on ' . $site_name . '.';
 
             $result = $this->communicator->generic_curl($update_text, $this->plugin_options['webn_slack_inbound_webhook']);
         }
