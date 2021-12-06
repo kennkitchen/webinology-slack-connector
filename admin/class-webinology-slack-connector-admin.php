@@ -278,6 +278,51 @@ class Webinology_Slack_Connector_Admin {
             <p><img src="<?= plugins_url('webinology-slack-connector') ?>/admin/partials/webnSlackConnLogo.png"></p>
             <h2>Thank you for choosing Webinology Slack Connector!</h2>
             <p>(instructions go here; needs to include info on how to configure Slack)</p>
+            <h3>Step One</h3>
+            <p>Some text</p>
+            <img src="<?= plugins_url('webinology-slack-connector') ?>/admin/img/SlackCreateAppStep01.png">
+            <p>Some more text</p>
+            <br /><br />
+            <h3>Step Two</h3>
+            <p>Some text</p>
+            <img src="<?= plugins_url('webinology-slack-connector') ?>/admin/img/SlackCreateAppStep02.png">
+            <p>Some more text</p>
+            <br /><br />
+            <h3>Step Three</h3>
+            <p>Some text</p>
+            <img src="<?= plugins_url('webinology-slack-connector') ?>/admin/img/SlackCreateAppStep03.png">
+            <p>Some more text</p>
+            <br /><br />
+            <h3>Step Four</h3>
+            <p>Some text</p>
+            <img src="<?= plugins_url('webinology-slack-connector') ?>/admin/img/SlackCreateAppStep04.png">
+            <p>Some more text</p>
+            <br /><br />
+            <h3>Step Five</h3>
+            <p>Some text</p>
+            <img src="<?= plugins_url('webinology-slack-connector') ?>/admin/img/SlackCreateAppStep05.png">
+            <p>Some more text</p>
+            <br /><br />
+            <h3>Step Six</h3>
+            <p>Some text</p>
+            <img src="<?= plugins_url('webinology-slack-connector') ?>/admin/img/SlackCreateAppStep06.png">
+            <p>Some more text</p>
+            <br /><br />
+            <h3>Step Seven</h3>
+            <p>Some text</p>
+            <img src="<?= plugins_url('webinology-slack-connector') ?>/admin/img/SlackCreateAppStep07.png">
+            <p>Some more text</p>
+            <br /><br />
+            <h3>Step Eight</h3>
+            <p>Some text</p>
+            <img src="<?= plugins_url('webinology-slack-connector') ?>/admin/img/SlackCreateAppStep08.png">
+            <p>Some more text</p>
+            <br /><br />
+            <h3>Step Nine</h3>
+            <p>Some text</p>
+            <img src="<?= plugins_url('webinology-slack-connector') ?>/admin/img/SlackCreateAppStep09.png">
+            <p>Some more text</p>
+            <br /><br />
         </div>
         <?php
     }
