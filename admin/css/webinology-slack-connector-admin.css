@@ -124,3 +124,15 @@
     margin-bottom : 16px;
     font-family: 'Montserrat', sans-serif;
 }
+
+.eam-panel .default-button {
+    background-color: #7f5343 !important;
+    color: #f5f5f5 !important;
+    border: none !important;
+}
+
+.eam-panel .default-button:hover {
+    background-color: #af5b46 !important;
+    color: #f5f5f5 !important;
+    border: none !important;
+}

@@ -1,0 +1,16 @@
+{
+  "name": "webinology/webinology-slack-connector",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "kenki",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "psr/log": "^1.1",
+    "monolog/monolog": "^2.3"
+  }
+}
