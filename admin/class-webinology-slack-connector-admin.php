@@ -348,6 +348,7 @@ class Webinology_Slack_Connector_Admin {
      * @return bool
      */
     public function is_webhook_valid() {
+        //todo refine this with regex
         if (strlen($this->plugin_options['webn_slack_inbound_webhook']) > 70) {
             return true;
         } else {
