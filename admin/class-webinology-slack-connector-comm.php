@@ -45,6 +45,7 @@ class Webinology_Slack_Connector_Comm {
      */
     private $logger;
 
+    private $webhook;
 
 
     /**
@@ -54,12 +55,12 @@ class Webinology_Slack_Connector_Comm {
      * @param      string    $plugin_name       The name of this plugin.
      * @param      string    $version    The version of this plugin.
      */
-    public function __construct( $plugin_name, $version, $logger ) {
+    public function __construct( $plugin_name, $version, $logger, $webhook ) {
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->logger = $logger;
-
+        $this->webhook = $webhook;
     }
 
     /**
@@ -116,12 +117,12 @@ class Webinology_Slack_Connector_Comm {
      * @param string $messageUrl
      * @return bool|string
      */
-    public function generic_curl(string $messageText, string $messageUrl) {
+    public function generic_curl(string $messageText) {
         $data = array(
             'text' => $messageText,
         );
         $post_data = json_encode($data);
-        $crl = curl_init($messageUrl);
+        $crl = curl_init($this->webhook);
 
         curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($crl, CURLINFO_HEADER_OUT, true);

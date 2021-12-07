@@ -69,8 +69,6 @@ class Webinology_Slack_Connector_Admin {
         $this->version = $version;
         $this->logger = $logger;
 
-        $this->communicator = new Webinology_Slack_Connector_Comm($this->plugin_name, $this->version, $this->logger);
-
         $webn_slack_options = get_option('webn_slack_options');
 
         if (!$webn_slack_options) {
@@ -92,7 +90,13 @@ class Webinology_Slack_Connector_Admin {
 
             }
         }
-//        $this->logger->debug('Class option for webook:', ['Option' => $this->plugin_options['webn_slack_inbound_webhook']]);
+
+        $this->communicator = new Webinology_Slack_Connector_Comm(
+                $this->plugin_name,
+                $this->version,
+                $this->logger,
+                $this->plugin_options['webn_slack_inbound_webhook']
+        );
 
     }
 
@@ -185,13 +189,13 @@ class Webinology_Slack_Connector_Admin {
             if (($new_status != $old_status) && ($new_status == 'publish') && ($this->plugin_options['webn_slack_alert_on_published'] == 'yes')) {
                 $update_text = 'User ' . $author->display_name . ' has just published "' . $post->post_title . '" on ' . $site_name . '. Check it out at: ' . $post_permalink;
 
-                $result = $this->communicator->generic_curl($update_text, $this->plugin_options['webn_slack_inbound_webhook']);
+                $result = $this->communicator->generic_curl($update_text);
             }
 
             if (($old_status == 'publish') && ($new_status != 'publish') && ($this->plugin_options['webn_slack_alert_on_unpublish'] == 'yes')) {
                 $update_text = 'User ' . $author->display_name . ' has unpublished "' . $post->post_title . '" on ' . $site_name . '.';
 
-                $result = $this->communicator->generic_curl($update_text, $this->plugin_options['webn_slack_inbound_webhook']);
+                $result = $this->communicator->generic_curl($update_text);
             }
         }
 
@@ -228,7 +232,7 @@ class Webinology_Slack_Connector_Admin {
 
             $update_text = 'User ' . $author . ' has updated "' . $post_after->post_title . '" on ' . $site_name . '.';
 
-            $result = $this->communicator->generic_curl($update_text, $this->plugin_options['webn_slack_inbound_webhook']);
+            $result = $this->communicator->generic_curl($update_text);
         }
 
     }
@@ -243,7 +247,7 @@ class Webinology_Slack_Connector_Admin {
 
             $update_text = 'There is a new comment on "' . $post->post_title . '" from ' . $commenter . ' on ' . $site_name . '.';
 
-            $result = $this->communicator->generic_curl($update_text, $this->plugin_options['webn_slack_inbound_webhook']);
+            $result = $this->communicator->generic_curl($update_text);
 
         }
     }
@@ -264,7 +268,7 @@ class Webinology_Slack_Connector_Admin {
      * @since 1.0.0
      */
     public function webn_slack_settings_page() {
-        require_once plugin_dir_path( __FILE__ ) . 'partials/webinology-slack-connector-admin-settings1.php';
+        require_once plugin_dir_path( __FILE__ ) . 'partials/webinology-slack-connector-admin-settings0.php';
     }
 
     /**
@@ -273,13 +277,7 @@ class Webinology_Slack_Connector_Admin {
      */
     public function webn_slack_submenu1_page() {
         $page_name = $this->get_request_parameter('page');
-        ?>
-        <div class="wrap eam-panel">
-            <p><img src="<?= plugins_url('webinology-slack-connector') ?>/admin/partials/webnSlackConnLogo.png"></p>
-            <div id="mount"></div>
-            <?= $page_name ?>
-        </div>
-        <?php
+        require_once plugin_dir_path( __FILE__ ) . 'partials/webinology-slack-connector-admin-settings1.php';
     }
 
     /**
@@ -288,13 +286,7 @@ class Webinology_Slack_Connector_Admin {
      */
     public function webn_slack_submenu2_page() {
         $page_name = $this->get_request_parameter('page');
-        ?>
-        <div class="wrap eam-panel">
-            <p><img src="<?= plugins_url('webinology-slack-connector') ?>/admin/partials/webnSlackConnLogo.png"></p>
-            <div id="mount"></div>
-            <?= $page_name ?>
-        </div>
-        <?php
+        require_once plugin_dir_path( __FILE__ ) . 'partials/webinology-slack-connector-admin-settings2.php';
     }
 
     /**
@@ -319,17 +311,17 @@ class Webinology_Slack_Connector_Admin {
      * @since 1.0.0
      */
     function webn_slack_admin_menus() {
-        add_menu_page('Webinology Slack Connector', 'Slack Connector', 'administrator', 'webn_slack_main_menu',
+        add_menu_page('Webinology Slack Connector', 'Slack Connector', 'manage_options', 'webn_slack_main_menu',
             [$this, 'webn_slack_main_menu_page'], 'dashicons-controls-volumeon');
 
         add_submenu_page('webn_slack_main_menu', 'Slack Connector Settings',
-            'Alert Settings', 'administrator', 'webn_slack_settings', [$this, 'webn_slack_settings_page']);
+            'Alert Settings', 'manage_options', 'webn_slack_settings', [$this, 'webn_slack_settings_page']);
 
-//        add_submenu_page('webn_slack_main_menu', 'Slack Connector Submenu 1',
-//            'Roles and Capabilities', 'administrator', 'webn_slack_submenu1', [$this, 'webn_slack_submenu1_page']);
-//
-//        add_submenu_page('webn_slack_main_menu', 'Slack Connector Submenu 2',
-//            'User Options', 'administrator', 'webn_slack_submenu2', [$this, 'webn_slack_submenu2_page']);
+        add_submenu_page('webn_slack_main_menu', 'Slack Connector Submenu 1',
+            'Slack Configuration', 'manage_options', 'webn_slack_submenu1', [$this, 'webn_slack_submenu1_page']);
+
+        add_submenu_page('webn_slack_main_menu', 'Slack Connector Submenu 2',
+            'Get Help', 'manage_options', 'webn_slack_submenu2', [$this, 'webn_slack_submenu2_page']);
 
         register_setting('webn_slack_options_group', 'webn_slack_options',
             [$this, 'webn_slack_sanitize_options']);

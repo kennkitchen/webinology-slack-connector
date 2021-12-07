@@ -122,7 +122,16 @@
     background-color: white;
     margin-top    : 16px;
     margin-bottom : 16px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat',  sans-serif;
+}
+
+.eam-panel body, p {
+    font-size: 1.2em;
+}
+
+.eam-panel ul {
+    list-style-type: circle;
+    list-style-position: inside;
 }
 
 .eam-panel .default-button {
