@@ -349,7 +349,9 @@ class Webinology_Slack_Connector_Admin {
      */
     public function is_webhook_valid() {
         //todo refine this with regex
-        if (strlen($this->plugin_options['webn_slack_inbound_webhook']) > 70) {
+        if (preg_match('|https:\/\/hooks\.slack\.com\/services\/[a-z,A-Z,0-9]{9}\/[a-z,A-Z,0-9]{11}\/[a-z,A-Z,0-9]{24}|', $this->plugin_options['webn_slack_inbound_webhook'])) {
+
+        //if (strlen($this->plugin_options['webn_slack_inbound_webhook']) > 70) {
             return true;
         } else {
             return false;
