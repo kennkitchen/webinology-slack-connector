@@ -84,7 +84,7 @@ class Webinology_Slack_Connector {
 		$this->plugin_name = 'webinology-slack-connector';
 
         $this->logger = new Logger('WEBN-SLACK-CONNECTOR');
-        $this->logger->pushHandler(new StreamHandler(PLUGIN_ROOT_PATH . 'webn_slack_connector.log', Logger::DEBUG));
+        $this->logger->pushHandler(new StreamHandler(PLUGIN_ROOT_PATH . 'webn_slack_connector.log', Logger::INFO));
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -182,6 +182,9 @@ class Webinology_Slack_Connector {
             $this->loader->add_action( 'post_updated', $plugin_admin, 'webn_slack_post_updates', 10, 3 );
             $this->loader->add_action( 'comment_post', $plugin_admin, 'webn_slack_new_comment', 10 ,3 );
         }
+
+        $this->loader->add_filter('cron_schedules', $plugin_admin, 'webn_slack_cron_schedules');
+        $this->loader->add_action( 'webn_slack_cron_hook', $plugin_admin,'webn_slack_cron_executor');
 
 	}
 

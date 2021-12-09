@@ -31,6 +31,9 @@ class Webinology_Slack_Connector_Deactivator {
 	 */
 	public static function deactivate() {
         delete_option('webn_slack_options');
+
+        $timestamp = wp_next_scheduled( 'webn_slack_cron_hook' );
+        wp_unschedule_event( $timestamp, 'webn_slack_cron_hook' );
 	}
 
 }

@@ -31,7 +31,7 @@
             </fieldset>
             <fieldset class="settings-boxes"><legend>Post Settings</legend><br />
                 <!-- Alert when post is published-->
-                <label for="webn_slack_options[webn_slack_alert_on_published]">Alert when post published?:</label>
+                <label for="webn_slack_options[webn_slack_alert_on_published]">Alert when post published:</label>
 
                 <input name="webn_slack_options[webn_slack_alert_on_published]"
                        value="yes" <?php checked('yes', $webn_slack_options['webn_slack_alert_on_published'], true) ?> type="radio">Yes<br>
@@ -40,7 +40,7 @@
                 <br />
 
                 <!--Alert when post is unpublished-->
-                <label for="webn_slack_options[webn_slack_alert_on_unpublish]">Alert when post unpublished?:</label>
+                <label for="webn_slack_options[webn_slack_alert_on_unpublish]">Alert when post unpublished:</label>
 
                 <input name="webn_slack_options[webn_slack_alert_on_unpublish]"
                        value="yes" <?php checked('yes', $webn_slack_options['webn_slack_alert_on_unpublish'], true) ?> type="radio">Yes<br>
@@ -49,7 +49,7 @@
                 <br />
 
                 <!--Alert when a previously published post is updated-->
-                <label for="webn_slack_options[webn_slack_alert_on_post_update]">Alert when a published post is updated?:</label>
+                <label for="webn_slack_options[webn_slack_alert_on_post_update]">Alert when a published post is updated:</label>
 
                 <input name="webn_slack_options[webn_slack_alert_on_post_update]"
                        value="yes" <?php checked('yes', $webn_slack_options['webn_slack_alert_on_post_update'], true) ?> type="radio">Yes<br>
@@ -60,12 +60,23 @@
             </fieldset>
             <fieldset class="settings-boxes"><legend>Comment Settings</legend><br />
                 <!-- Alert when comment is added-->
-                <label for="webn_slack_options[webn_slack_alert_on_new_comment]">Alert when a comment is added?:</label>
+                <label for="webn_slack_options[webn_slack_alert_on_new_comment]">Alert when a comment is added:</label>
 
                 <input name="webn_slack_options[webn_slack_alert_on_new_comment]"
                        value="yes" <?php checked('yes', $webn_slack_options['webn_slack_alert_on_new_comment'], true) ?> type="radio">Yes<br>
                 <input name="webn_slack_options[webn_slack_alert_on_new_comment]"
                        value="no" <?php checked('no', $webn_slack_options['webn_slack_alert_on_new_comment'], true) ?> type="radio">No<br>
+                <br />
+
+            </fieldset>
+            <fieldset class="settings-boxes"><legend>Plugin/Theme Update Settings</legend><br />
+                <!-- Alert when plugin or theme has an update -->
+                <label for="webn_slack_options[webn_slack_alert_on_available_updates]">Alert when there are updates available for plugins/themes:</label>
+
+                <input name="webn_slack_options[webn_slack_alert_on_available_updates]"
+                       value="yes" <?php checked('yes', $webn_slack_options['webn_slack_alert_on_available_updates'], true) ?> type="radio">Yes<br>
+                <input name="webn_slack_options[webn_slack_alert_on_available_updates]"
+                       value="no" <?php checked('no', $webn_slack_options['webn_slack_alert_on_available_updates'], true) ?> type="radio">No<br>
                 <br />
 
             </fieldset>

@@ -54,6 +54,7 @@ class Webinology_Slack_Connector_Admin {
             'webn_slack_alert_on_unpublish' => 'no',
             'webn_slack_alert_on_post_update' => 'no',
             'webn_slack_alert_on_new_comment' => 'no',
+            'webn_slack_alert_on_available_updates' => 'no',
         );
 
     /**
@@ -154,6 +155,37 @@ class Webinology_Slack_Connector_Admin {
      */
     public function webn_slack_initialization() {
 
+        if ( ! wp_next_scheduled( 'webn_slack_cron_hook' ) ) {
+            wp_schedule_event( time(), 'six_hours', 'webn_slack_cron_hook' );
+        }
+
+    }
+
+    public function webn_slack_cron_schedules($schedules) {
+        $schedules['six_hours'] = array(
+            'interval' => 21600,
+            'display'  => esc_html__( 'Every Six Hours' ), );
+
+        return $schedules;
+    }
+
+    public function webn_slack_cron_executor() {
+        if ($this->plugin_options['webn_slack_alert_on_available_updates'] == 'yes') {
+            $updates = get_site_transient( 'update_plugins' );
+
+            if ($updates->response) {
+                foreach ($updates->response as $response) {
+                    // check for transient
+                    $have_we_notified = null;
+                    $transient_name = 'webn_slack_' . $response->slug;
+                    $have_we_notified = get_transient( $transient_name );
+                    if (!$have_we_notified) {
+                        $result = $this->webn_slack_updates_available($response->slug);
+                        set_transient( $transient_name, true, 86400 );
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -179,7 +211,7 @@ class Webinology_Slack_Connector_Admin {
             return;
         }
 
-
+        $result = null;
 
         if (($this->plugin_options['webn_slack_alert_on_published'] == 'yes') || ($this->plugin_options['webn_slack_alert_on_unpublish'] == 'yes'))  {
             $author = get_user_by('ID', $post->post_author);
@@ -198,6 +230,8 @@ class Webinology_Slack_Connector_Admin {
                 $result = $this->communicator->generic_curl($update_text);
             }
         }
+
+        return result;
 
     }
 
@@ -225,6 +259,8 @@ class Webinology_Slack_Connector_Admin {
             return;
         }
 
+        $result = null;
+
         if ($this->plugin_options['webn_slack_alert_on_post_update'] == 'yes') {
             $author = wp_get_current_user()->user_login;//   get_user_by('ID', $post_after->post_author);
             $site_name = get_bloginfo('name');
@@ -235,10 +271,19 @@ class Webinology_Slack_Connector_Admin {
             $result = $this->communicator->generic_curl($update_text);
         }
 
+        return result;
     }
 
+    /**
+     * @param int $comment_ID
+     * @param int $comment_approved
+     * @param array $commentdata
+     * @return void
+     */
     public function webn_slack_new_comment(int $comment_ID, int $comment_approved, array $commentdata) {
         $this->logger->debug('New comment hook fired.');
+
+        $result = null;
 
         if ($this->plugin_options['webn_slack_alert_on_new_comment'] == 'yes') {
             $commenter = $commentdata['comment_author'];
@@ -250,8 +295,19 @@ class Webinology_Slack_Connector_Admin {
             $result = $this->communicator->generic_curl($update_text);
 
         }
+
+        return $result;
     }
 
+    private function webn_slack_updates_available(string $slug) {
+        $this->logger->debug('Update available for ' . $slug);
+
+        if ($this->plugin_options['webn_slack_alert_on_available_updates'] == 'yes') {
+            $site_name = get_bloginfo('name');
+            $update_text = 'There is an update available for "' . $slug . '" on ' . $site_name . '.';
+            $result = $this->communicator->generic_curl($update_text);
+        }
+    }
 
     /**
      * Main Menu Page
