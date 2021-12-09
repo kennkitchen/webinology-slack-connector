@@ -4,6 +4,7 @@
 This plugin sends alerts to Slack based on selected WordPress events.
 
 ## Change Log
+* 1.5.1 - Fixed a typo that was breaking some backend functions.
 * 1.5.0 - Plugin/theme update now uses wp-cron.
 * 1.4.0 - Added notification for available plugin/theme updates.
 * 1.3.0 - Added notification for new comments.

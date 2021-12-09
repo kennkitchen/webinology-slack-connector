@@ -231,7 +231,7 @@ class Webinology_Slack_Connector_Admin {
             }
         }
 
-        return result;
+        return $result;
 
     }
 
@@ -271,7 +271,7 @@ class Webinology_Slack_Connector_Admin {
             $result = $this->communicator->generic_curl($update_text);
         }
 
-        return result;
+        return $result;
     }
 
     /**
