@@ -1,12 +1,12 @@
 {
-  "name": "webinology/webinology-slack-connector",
-  "description": "description",
+  "name": "webinology/webinology-us",
+  "description": "Webinology plugins",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
     {
-      "name": "kenki",
-      "email": "email@example.com"
+      "name": "Webinology",
+      "email": "team@webinology.io"
     }
   ],
   "require": {

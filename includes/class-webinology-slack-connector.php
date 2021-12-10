@@ -84,7 +84,7 @@ class Webinology_Slack_Connector {
 		$this->plugin_name = 'webinology-slack-connector';
 
         $this->logger = new Logger('WEBN-SLACK-CONNECTOR');
-        $this->logger->pushHandler(new StreamHandler(PLUGIN_ROOT_PATH . 'webn_slack_connector.log', Logger::INFO));
+        $this->logger->pushHandler(new StreamHandler(PLUGIN_ROOT_PATH . 'webn_slack_connector.log', Logger::ERROR));
 
 		$this->load_dependencies();
 		$this->set_locale();

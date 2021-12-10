@@ -1,9 +1,10 @@
 # Webinology Slack Connector
-![Product Status](https://img.shields.io/badge/Status%3A-Beta-yellow) ![Product Version](https://img.shields.io/badge/Version%3A-1.5.0-informational)
+![Product Status](https://img.shields.io/badge/Status%3A-Beta-yellow) ![Product Version](https://img.shields.io/badge/Version%3A-1.6.1-informational)
 
 This plugin sends alerts to Slack based on selected WordPress events.
 
 ## Change Log
+* 1.6.1 - Now allows user to select which post types upon which to alert.
 * 1.5.1 - Fixed a typo that was breaking some backend functions.
 * 1.5.0 - Plugin/theme update now uses wp-cron.
 * 1.4.0 - Added notification for available plugin/theme updates.

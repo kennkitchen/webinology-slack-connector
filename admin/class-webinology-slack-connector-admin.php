@@ -53,6 +53,7 @@ class Webinology_Slack_Connector_Admin {
             'webn_slack_alert_on_published' => 'no',
             'webn_slack_alert_on_unpublish' => 'no',
             'webn_slack_alert_on_post_update' => 'no',
+            'webn_slack_post_types' => 'all',
             'webn_slack_alert_on_new_comment' => 'no',
             'webn_slack_alert_on_available_updates' => 'no',
         );
@@ -161,6 +162,10 @@ class Webinology_Slack_Connector_Admin {
 
     }
 
+    /**
+     * @param $schedules
+     * @return mixed
+     */
     public function webn_slack_cron_schedules($schedules) {
         $schedules['six_hours'] = array(
             'interval' => 21600,
@@ -169,6 +174,9 @@ class Webinology_Slack_Connector_Admin {
         return $schedules;
     }
 
+    /**
+     * @return void
+     */
     public function webn_slack_cron_executor() {
         if ($this->plugin_options['webn_slack_alert_on_available_updates'] == 'yes') {
             $updates = get_site_transient( 'update_plugins' );
@@ -202,8 +210,7 @@ class Webinology_Slack_Connector_Admin {
             return;
         }
 
-        // TODO this should really be checking against an option where user has said which post types to alert on.
-        if (!in_array($post->post_type, ['post', 'page'])) {
+        if (!in_array($post->post_type, $this->plugin_options['webn_slack_post_types'])) {
             return;
         }
 
@@ -250,8 +257,7 @@ class Webinology_Slack_Connector_Admin {
             return;
         }
 
-        // TODO this should really be checking against an option where user has said which post types to alert on.
-        if (!in_array($post_after->post_type, ['post', 'page'])) {
+        if (!in_array($post_after->post_type, $this->plugin_options['webn_slack_post_types'])) {
             return;
         }
 
@@ -299,6 +305,10 @@ class Webinology_Slack_Connector_Admin {
         return $result;
     }
 
+    /**
+     * @param string $slug
+     * @return void
+     */
     private function webn_slack_updates_available(string $slug) {
         $this->logger->debug('Update available for ' . $slug);
 
