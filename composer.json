@@ -11,6 +11,7 @@
   ],
   "require": {
     "psr/log": "^1.1",
-    "monolog/monolog": "^2.3"
+    "monolog/monolog": "^2.3",
+    "sentry/sdk": "^3.1"
   }
 }

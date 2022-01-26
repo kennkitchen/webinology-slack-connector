@@ -282,11 +282,11 @@ class Webinology_Slack_Connector_Admin {
 
     /**
      * @param int $comment_ID
-     * @param int $comment_approved
+     * @param string $comment_approved
      * @param array $commentdata
      * @return void
      */
-    public function webn_slack_new_comment(int $comment_ID, int $comment_approved, array $commentdata) {
+    public function webn_slack_new_comment(int $comment_ID, string $comment_approved, array $commentdata) {
         $this->logger->debug('New comment hook fired.');
 
         $result = null;
@@ -416,8 +416,6 @@ class Webinology_Slack_Connector_Admin {
     public function is_webhook_valid() {
         //todo refine this with regex
         if (preg_match('|https:\/\/hooks\.slack\.com\/services\/[a-z,A-Z,0-9]{9}\/[a-z,A-Z,0-9]{11}\/[a-z,A-Z,0-9]{24}|', $this->plugin_options['webn_slack_inbound_webhook'])) {
-
-        //if (strlen($this->plugin_options['webn_slack_inbound_webhook']) > 70) {
             return true;
         } else {
             return false;

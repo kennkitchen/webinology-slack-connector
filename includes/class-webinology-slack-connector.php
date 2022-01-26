@@ -66,6 +66,8 @@ class Webinology_Slack_Connector {
      */
     protected $logger;
 
+    protected $sentry;
+
 	/**
 	 * Define the core functionality of the plugin.
 	 *
