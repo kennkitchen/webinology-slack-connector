@@ -1,5 +1,5 @@
 # Webinology Slack Connector
-![Product Status](https://img.shields.io/badge/Status%3A-Beta-yellow) ![Product Version](https://img.shields.io/badge/Version%3A-1.6.1-informational)
+![Product Status](https://img.shields.io/badge/Status%3A-Beta-yellow) ![Product Version](https://img.shields.io/badge/Version%3A-1.6.2-informational)
 
 This plugin sends alerts to Slack based on selected WordPress events.
 
