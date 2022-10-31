@@ -4,6 +4,7 @@
 This plugin sends alerts to Slack based on selected WordPress events.
 
 ## Change Log
+* 1.6.3 - Added PHPStan (dev). Fixed issue with inconsistent return type from method that checks for plugin updates.
 * 1.6.2 - New comment callback was expecting an int for status; changed to string.
 * 1.6.1 - Now allows user to select which post types upon which to alert.
 * 1.5.1 - Fixed a typo that was breaking some backend functions.
