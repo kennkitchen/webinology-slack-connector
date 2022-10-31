@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /**
  * The Comm-specific functionality of the plugin.
  *

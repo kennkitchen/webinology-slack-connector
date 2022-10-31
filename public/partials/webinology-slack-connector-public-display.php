@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /**
  * Provide a public-facing view for the plugin
  *

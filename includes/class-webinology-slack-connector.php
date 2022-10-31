@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /**
  * The file that defines the core plugin class
  *

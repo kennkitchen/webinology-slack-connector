@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -309,14 +309,18 @@ class Webinology_Slack_Connector_Admin {
      * @param string $slug
      * @return void
      */
-    private function webn_slack_updates_available(string $slug) {
+    private function webn_slack_updates_available(string $slug): string {
         $this->logger->debug('Update available for ' . $slug);
 
         if ($this->plugin_options['webn_slack_alert_on_available_updates'] == 'yes') {
             $site_name = get_bloginfo('name');
             $update_text = 'There is an update available for "' . $slug . '" on ' . $site_name . '.';
             $result = $this->communicator->generic_curl($update_text);
+        } else {
+            $result = $this->communicator->generic_curl('No updates found.');
         }
+
+        return $result;
     }
 
     /**

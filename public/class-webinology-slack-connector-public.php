@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /**
  * The public-facing functionality of the plugin.
  *
