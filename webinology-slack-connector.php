@@ -8,7 +8,7 @@ declare(strict_types=1);
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://kmde.us
+ * @link              https://kenn.kitchen
  * @since             1.0.0
  * @package           Webinology_Slack_Connector
  *
@@ -17,8 +17,8 @@ declare(strict_types=1);
  * Plugin URI:        https://webinology.io
  * Description:       Get notifications in Slack when things change on your WordPress website.
  * Version:           1.6.3
- * Author:            KMD Enterprises, LLC (DBA Webinology)
- * Author URI:        https://kmde.us
+ * Author:            Kenn Kitchen
+ * Author URI:        https://kenn.kitchen
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       webinology-slack-connector

@@ -11,6 +11,7 @@ declare(strict_types=1);
  * @package    Webinology_Slack_Connector
  * @subpackage Webinology_Slack_Connector/admin/partials
  */
+// TODO Needs finishing!
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
